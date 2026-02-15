@@ -86,8 +86,9 @@ function VideoCall() {
         video: {
           width: { ideal: 1280 },
           height: { ideal: 720 },
-          frameRate: { ideal: 60 },
-          facingMode: "user",
+          frameRate: { ideal: 30,max:60 },
+          aspectRatio: 1.7777777778
+
         },
         audio: true,
       });
@@ -207,7 +208,7 @@ function VideoCall() {
           ref={remoteVideoRef}
           autoPlay
           playsInline
-          className="w-full h-full object-fill bg-black"
+          className="w-full h-full  object-cover scale-x-[-1] bg-black"
         />
 
         <video
@@ -220,7 +221,7 @@ function VideoCall() {
     w-[18rem] aspect-video
     rounded-xl
     border border-gray-400
-    object-fill
+    object-cover
     bg-black
   "
         />

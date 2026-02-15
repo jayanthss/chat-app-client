@@ -2,16 +2,23 @@ import { useRef, useState, useEffect } from "react";
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import { IoMdSend } from "react-icons/io";
 import { BsEmojiSmileFill } from "react-icons/bs";
-import { socket } from "../socket.js";
-import { getRewriteByAi, host } from "../utils/ApiRoutes";
-import axios from "axios";
-import { OrbitProgress } from "react-loading-indicators";
+import { socket } from "../../socket.js";
+import { getRewriteByAi, host } from "../../utils/ApiRoutes.js";
+
 import { SyncLoader } from "react-spinners";
+import { FaMagic } from "react-icons/fa";
+import { FaArrowsRotate } from "react-icons/fa6";
+import { SlClose } from "react-icons/sl";
+import { FaCheck } from "react-icons/fa";
+import IconButton from "../Button/IconButton.jsx";
+import { api } from "../../api/axios.js";
+import Buttonfactory from "../../factories/ButtonFactory.jsx";
 
 export default function Chat_Input({ handleSendMessage, currchat }) {
   const [isclickemoji, setisclickemoji] = useState(false);
   const [useremoji, setuseremoji] = useState(null);
   const [userInput, setuserInput] = useState("");
+  const textareaRef = useRef(null);
 
   // const [previewText,setpreviewText] = useRef(null)
   let [hideSend, sethideSend] = useState(true);
@@ -28,6 +35,13 @@ export default function Chat_Input({ handleSendMessage, currchat }) {
 
   const Input_change = (event) => {
     setuserInput(event.target.value);
+    const textarea = textareaRef.current;
+
+    // reset height first
+    textarea.style.height = "auto";
+
+    // set new height based on content
+    textarea.style.height = textarea.scrollHeight + "px";
   };
 
   const sendChat = (event) => {
@@ -44,7 +58,7 @@ export default function Chat_Input({ handleSendMessage, currchat }) {
         preview_msg.data = userInput;
         setLoading(true);
 
-        const response = await axios.post(getRewriteByAi, {
+        const response = await api.post(getRewriteByAi, {
           user_message: userInput,
         });
 
@@ -62,11 +76,12 @@ export default function Chat_Input({ handleSendMessage, currchat }) {
     }
   };
 
-  const handlePreviewBtn = async (event) => {
-    if (event.target.textContent === "close") {
+  const handlePreviewBtn = async (click_btn) => {
+    // console.log(event.target.textContent , event.target)
+    if (click_btn === "user_not_Accpted") {
       setuserInput(preview_msg.data);
       sethideSend(true);
-    } else if (event.target.textContent === "regenerate") {
+    } else if (click_btn === "user_regenerate") {
       setLoading(true);
       await handleRewrite();
       setLoading(false);
@@ -78,8 +93,8 @@ export default function Chat_Input({ handleSendMessage, currchat }) {
 
   return (
     <>
-      <div className="container flex justify-center items-center   px-8  relative overflow-visible w-[70vw] mb-4 ">
-        <div className="Input_field flex justify-center items-center w-[60vw]   p-[0.3rem] rounded-[2rem] gap-[0.5rem] bg-[#21212a]  ">
+      <div className="container  flex justify-center items-center px-8  absolute bottom-5 overflow-visible w-[70vw] resize-y">
+        <div className="Input_field flex items-center justify-center w-[60vw] p-2 rounded-[2rem] gap-[0.5rem] bg-[#21212a]  resize-y">
           <div className="button_container flex items-center justify-center text-white">
             <div className="emoji relative">
               <BsEmojiSmileFill
@@ -104,28 +119,23 @@ export default function Chat_Input({ handleSendMessage, currchat }) {
           </div>
 
           <form
-            className="input_container w-[50vw] h-[5vh] flex justify-center items-center"
+            className="input_container w-[50vw]  flex items-center gap-5"
             onSubmit={(e) => {
               sendChat(e);
             }}
           >
             <textarea
-              className="w-full bg-transparent text-white border-none pl-4  text-lg focus:outline-none overflow-hidden resize-none "
+              ref={textareaRef}
+              className="w-full custom-scrollbar bg-transparent resize-none max-h-[7rem] overflow-y-scroll text-white border-none pl-4  text-lg focus:outline-none"
               rows={1}
               placeholder="Type Message"
               value={userInput}
               onChange={Input_change}
             />
+            
 
             {hideSend && (
-              <button
-                type="submit"
-                className={`send_message p-3 rounded-full flex justify-center items-center  ${
-                  userInput === "" ? "" : "bg-[#6b4beb] "
-                }`}
-              >
-                <IoMdSend className="text-white text-xl" />
-              </button>
+              <Buttonfactory variant="icon" className="p-3 rounded-full flex justify-center items-center " Icon= {IoMdSend} Icon_Style = "text-white text-[1.1rem]" user_input={userInput} iconName = "Send"/>
             )}
           </form>
 
@@ -133,48 +143,31 @@ export default function Chat_Input({ handleSendMessage, currchat }) {
             <div className="previewBtn flex gap-3 text-[white]">
               <div className="generate_Btn p-3 rounded-full flex justify-center items-center bg-[#6d4beb]">
                 {!loading ? (
-                  <button
-                    className=""
-                    onClick={(event) => handlePreviewBtn(event)}
-                  >
-                    regenerate
-                  </button>
+                  <Buttonfactory variant="icon" className="" Icon= {FaArrowsRotate} Icon_Style = "text-white text-[1.1rem]" onClick={() => handlePreviewBtn("user_regenerate")}/>
+
                 ) : (
                   <div className=" bg-[#6b4beb] p-1 rounded-full flex items-center justify-center">
-                    <SyncLoader loading={true} color="#ffff" size={10} />
+                    <SyncLoader loading={true} color="#ffff" size={7} />
                   </div>
                 )}
               </div>
+              
+              {<Buttonfactory variant="icon" className="p-3 rounded-full flex justify-center items-center bg-[#6d4beb]" Icon= {SlClose} Icon_Style = "text-white text-[1.1rem]" onClick={() => handlePreviewBtn("user_not_Accpted")}/>}
 
-              <button
-                className="p-3 rounded-full flex justify-center items-center bg-[#6d4beb]"
-                onClick={(event) => handlePreviewBtn(event)}
-              >
-                close
-              </button>
+              {<Buttonfactory variant="icon" className="p-3 rounded-full flex justify-center items-center bg-[#6d4beb]" Icon= {FaCheck} Icon_Style = "text-white text-[1.1rem]" onClick={() => handlePreviewBtn("user_accepted")}/>}
+              
 
-              <button
-                className="p-3 rounded-full flex justify-center items-center bg-[#6d4beb]"
-                onClick={() => handlePreviewBtn(event)}
-              >
-                Accept
-              </button>
+            
             </div>
           ) : (
             <>
               {loading ? (
                 <div className=" bg-[#6b4beb] p-[0.7rem] rounded-full flex items-center justify-center">
-                  <SyncLoader loading={true} color="#ffff" size={10} />
+                  <SyncLoader loading={true} color="#ffff" size={7} />
                 </div>
               ) : (
-                <div
-                  onClick={handleRewrite}
-                  className={`${
-                    userInput === "" ? "" : "bg-[#6b4beb]"
-                  }  text-[white] p-[0.7rem] rounded-full flex justify-center items-center cursor-pointer`}
-                >
-                  Rewrite
-                </div>
+                <Buttonfactory variant="icon" className="text-[white] p-[0.7rem] rounded-full flex justify-center items-center cursor-pointer " Icon= {FaMagic} Icon_Style = "text-white text-[1.1rem]" user_input={userInput} onClick={handleRewrite}/>
+
               )}
             </>
           )}

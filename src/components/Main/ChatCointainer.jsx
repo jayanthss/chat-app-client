@@ -7,7 +7,7 @@ import {
   sendMessageRoute,
   getUserRoute,
   host,
-} from "../utils/ApiRoutes";
+} from "../../utils/ApiRoutes";
 import { ToastContainer, toast } from "react-toastify";
 
 import VideoLogo from "./VideoLogo";
@@ -15,7 +15,7 @@ import VideoLogo from "./VideoLogo";
 import { IoMdCall } from "react-icons/io";
 import { MdCallEnd } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { api } from "../api/axios";
+import { api } from "../../api/axios";
 
 function ChatCointainer({ currchat, curruser, socket }) {
   // const socket = io(host);
@@ -26,11 +26,11 @@ function ChatCointainer({ currchat, curruser, socket }) {
   const [incomingVideoCall, setincomingVideoCall] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const VideoCaller = useRef(null);
-  let now = new Date()
-  let time = now.toLocaleTimeString("en-IN",{
-    hour:"2-digit",
-    minute:"2-digit"
-  })
+  let now = new Date();
+  let time = now.toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   const toast_options = {
     position: "bottom-right",
@@ -54,8 +54,6 @@ function ChatCointainer({ currchat, curruser, socket }) {
           to: currchat._id,
         });
         setmessages(response.data);
-
-        // console.log([...message])
       }
     })();
   }, [currchat]);
@@ -82,7 +80,6 @@ function ChatCointainer({ currchat, curruser, socket }) {
   useEffect(() => {
     if (socket.current) {
       socket.current.on("msg-recieve", (msg) => {
-        
         setarrivalmessage({ fromSelf: false, message: msg });
       });
 
@@ -115,7 +112,6 @@ function ChatCointainer({ currchat, curruser, socket }) {
   }, []);
 
   useEffect(() => {
-
     arrivalmessage && setmessages((prev) => [...prev, arrivalmessage]);
   }, [arrivalmessage]);
 
@@ -140,13 +136,16 @@ function ChatCointainer({ currchat, curruser, socket }) {
   return (
     <>
       {currchat && (
-        <div className="relative cointainer grid grid-rows-[10%_78%_12%] gap-[0.1rem] overflow-hidden bg-[#121212] z-0 ">
-          
-          <div className="chat-header flex justify-between items-center p-[1.4rem] bg-[#080420] ">
+        <div className="relative cointainer grid grid-rows-[10%_78%] gap-[0.1rem] overflow-hidden bg-[#121212] z-0 ">
+          <div
+            className="
+ chat-header flex justify-between items-center px-[2.2rem] h-18 border-b border-[#1E293B]
+"
+          >
             <div className="user-details flex items-center gap-[1.1rem]  ">
               <div className="avatar ">
                 <img
-                  className="h-[3rem]"
+                  className="h-[2.7rem]"
                   src={currchat.avatarImage}
                   alt="selected user image"
                 />
@@ -173,7 +172,6 @@ function ChatCointainer({ currchat, curruser, socket }) {
                 <div className="flex justify-between items-center pl-2 pr-2  w-[28rem] h-20 rounded-[1rem] bg-[#232D36]">
                   <div className="user_avatar flex items-center gap-3 ">
                     <div className="avatar w-14 h-14 rounded-2xl bg-white object-cover">
-                      {" "}
                       <img src={userInfo.userimage} />
                     </div>
 
@@ -202,9 +200,8 @@ function ChatCointainer({ currchat, curruser, socket }) {
             )}
           </div>
 
-          <div className="messagesCoinatiner  flex flex-col gap-[1rem] overflow-auto  custom-scrollbar bg-[#121216] p-[0_5.5rem_0]">
+          <div className="messagesCoinatiner  flex flex-col gap-[1rem] overflow-auto  custom-scrollbar bg-[#121216] p-[0_5.5rem_0] mt-1">
             {message.map((message, idx) => {
-              
               return (
                 <div ref={scrollref} key={idx}>
                   <div
@@ -222,8 +219,11 @@ function ChatCointainer({ currchat, curruser, socket }) {
                       } `}
                     >
                       <p>{message.message}</p>
-                      <p className="text-[10px] text-end text-[#94A3B8]">{message.date_time ? message.date_time : time.split(" ")[0]}</p>
-
+                      <p className="text-[10px] text-end text-[#94A3B8]">
+                        {message.date_time
+                          ? message.date_time
+                          : time.split(" ")[0]}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -233,12 +233,11 @@ function ChatCointainer({ currchat, curruser, socket }) {
 
           <Chat_Input
             handleSendMessage={handleSendMessage}
-            currchat={currchat} 
+            currchat={currchat}
           />
-          <ToastContainer className="absolute bottom-0"/>
+          <ToastContainer className="absolute bottom-0" />
         </div>
       )}
-      
     </>
   );
 }

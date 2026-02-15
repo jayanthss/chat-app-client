@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../assets/loader.gif";
 import "./../css/input.css";
 import { ToastContainer, toast } from "react-toastify";
-import axios from "axios";
 import { SetAvatarRoute, tokenCheckRoute } from "../utils/ApiRoutes";
 import multiavatar from "@multiavatar/multiavatar/esm";
+import { api } from "../api/axios";
 
 export default function SetAvatar() {
   const toast_options = {
@@ -23,40 +23,49 @@ export default function SetAvatar() {
   const [selectedAvatar, setSelectedAvatar] = useState(undefined);
 
   const selectProfilePicture = async () => {
-    if (selectedAvatar === undefined) {
-      toast.error("Select Avatar", toast_options);
-    } else {
-      const token = localStorage.getItem("Token");
-      const verify_token = await axios.post(
-        tokenCheckRoute,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      console.log(verify_token);
-      const data = await axios.post(
-        `${SetAvatarRoute}/${verify_token.data.username}`,
-        {
-          image: avatars[selectedAvatar],
-        }
-      );
-
-      if (data.data.isset) {
-        const user = {
-          username: verify_token.data.username,
-          isAvatarImageSet: data.data.isset,
-          avatarImage: data.data.image,
-          _id: data.data._id,
-        };
-        localStorage.setItem("chat-app-user", JSON.stringify(user));
-        navigate("/");
+    try {
+      if (selectedAvatar === undefined) {
+        toast.error("Select Avatar", toast_options);
       } else {
-        toast.error("error in set avatar try again", toast_options);
+        const token = localStorage.getItem("Token");
+        const verify_token = await api.post(
+          tokenCheckRoute,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log(verify_token);
+        const data = await api.post(
+          `${SetAvatarRoute}/${verify_token.data.username}`,
+          {
+            image: avatars[selectedAvatar],
+          }
+        );
+
+        if (data.data.isset) {
+          const user = {
+            username: verify_token.data.username,
+            isAvatarImageSet: data.data.isset,
+            avatarImage: data.data.image,
+            _id: data.data._id,
+          };
+          localStorage.setItem("chat-app-user", JSON.stringify(user));
+          navigate("/");
+        } else {
+          toast.error("error in set avatar try again", toast_options);
+        }
       }
+    } catch (ex) {
+      if (ex.status === 0) {
+        navigate("/server-down");
+        return;
+      }
+      toast.error(ex.message, toast_options);
+      console.log("error in chat ", ex);
     }
   };
 

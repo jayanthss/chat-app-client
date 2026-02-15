@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import robo from "./../assets/robot.gif";
+import robo from "../../assets/robot.gif";
 
 function Welcome() {
   const [Username,setUsername] = useState("")

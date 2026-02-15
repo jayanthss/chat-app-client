@@ -4,6 +4,8 @@ import Login from "./pages/login";
 import Chat from "./pages/chat";
 import SetAvatar from "./pages/setAvatar";
 import VideoCall from "./pages/VideoCaller";
+import PageNotFound from "./Error_Components/PageNotFound";
+import ServerDownPage from "./Error_Components/serverDown";
 
 export default function App() {
   return (
@@ -14,6 +16,8 @@ export default function App() {
         <Route path="/setAvatar" element={<SetAvatar />} />
         <Route path="/" element={<Chat />} />
         <Route path="/VideoCall/:chatchatId" element={<VideoCall />} />
+        <Route path="/server-down" element={<ServerDownPage/>} />
+        <Route path="*" element={<PageNotFound/>} />
       </Routes>
     </BrowserRouter>
   );

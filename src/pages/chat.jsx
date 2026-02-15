@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import { allUsers, host, tokenCheckRoute } from "../utils/ApiRoutes";
-import Contacts from "../components/Contacts";
-import Welcome from "../components/Welcome";
-import ChatCointainer from "../components/ChatCointainer";
+import Contacts from "../components/Main/Contacts";
+import Welcome from "../components/Main/Welcome";
+import ChatCointainer from "../components/Main/ChatCointainer";
 import { io } from "socket.io-client";
 import { api } from "../api/axios";
 
@@ -19,13 +19,20 @@ function chat() {
   const [onlineUser, setOnlineuser] = useState("");
   const [disUser, setDisuser] = useState("");
 
+  const toast_options = {
+    position: "bottom-right",
+    theme: "dark",
+    pauseOnHover: true,
+    draggable: true,
+    autoClose: 4000,
+  };
   useEffect(() => {
     (async () => {
       try {
         const token = localStorage.getItem("Token");
         if (!token) navigate("/login");
         console.log("entered to chat")
-        const verify = await api.post("api/auth/tokenCheck")
+        const verify = await api.post(tokenCheckRoute)
 
 
         if (!verify) {
@@ -35,6 +42,11 @@ function chat() {
           setisloaded(true);
         }
       } catch (ex) {
+        if(ex.status === 0){
+          navigate("/server-down")
+          return
+        }
+        toast.error(ex.message,toast_options)
         console.log("error in chat ",ex)
       }
     })();
@@ -76,7 +88,14 @@ function chat() {
             navigate("/setAvatar");
           }
         }
-      } catch (ex) {}
+      } catch (ex) {
+        if(ex.status === 0){
+          navigate("/server-down")
+          return
+        }
+        toast.error(ex.message)
+        console.log("error in chat ",ex)
+      }
     })();
   }, [curruser]);
 
@@ -96,6 +115,7 @@ function chat() {
         curruser={curruser}
         currchat={handleChatchange}
         onlineUser={onlineUser}
+        setcontact = {setcontact}
       />
       {isloaded && currChat === undefined ? (
         <Welcome />
