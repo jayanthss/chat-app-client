@@ -30,22 +30,22 @@ function VideoCall() {
   let [video, setVideo] = useState(false);
 
   useEffect(() => {
-    console.log(`Roles = ${role}`);
+    // console.log(`Roles = ${role}`);
 
     const socket = io(host);
     socketRef.current = socket;
 
     const handleReject = () => {
-      console.log("inside the request reject");
+      // console.log("inside the request reject");
 
       peerConnectionRef.current?.close();
       peerConnectionRef.current = null;
 
       if (localStreamRef) {
         localStreamRef.current?.getTracks().forEach((t) => t.stop());
-        console.log(`getting video ${localStreamRef.current.getVideoTracks()}`);
+        // console.log(`getting video ${localStreamRef.current.getVideoTracks()}`);
       }
-      console.log(localStreamRef.current.getTracks().map((t) => t.readyState));
+      // console.log(localStreamRef.current.getTracks().map((t) => t.readyState));
       localStreamRef.current = null;
 
       socket.emit("call-reject-msg", socket.id);
@@ -77,7 +77,7 @@ function VideoCall() {
     socket.emit("join-room", roomId);
 
     socketRef.current.on("request_Reject", (msg) => {
-      console.log("inside the request reject");
+      // console.log("inside the request reject");
       navigate("/");
     });
 
@@ -86,13 +86,12 @@ function VideoCall() {
         video: {
           width: { ideal: 1280 },
           height: { ideal: 720 },
-          frameRate: { ideal: 30,max:60 },
-          aspectRatio: 1.7777777778
-
+          frameRate: { ideal: 60 },
+          facingMode: "user",
         },
         audio: true,
       });
-      console.log("local streams : ", stream);
+      // console.log("local streams : ", stream);
 
       localVideoRef.current.srcObject = stream;
       localStreamRef.current = stream;
@@ -208,7 +207,7 @@ function VideoCall() {
           ref={remoteVideoRef}
           autoPlay
           playsInline
-          className="w-full h-full  object-cover scale-x-[-1] bg-black"
+          className="w-full h-full object-fill bg-black"
         />
 
         <video
@@ -221,7 +220,7 @@ function VideoCall() {
     w-[18rem] aspect-video
     rounded-xl
     border border-gray-400
-    object-cover
+    object-fill
     bg-black
   "
         />

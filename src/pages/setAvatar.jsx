@@ -38,34 +38,35 @@ export default function SetAvatar() {
           }
         );
 
-        console.log(verify_token);
-        const data = await api.post(
+        const SetAavatarInfo = await api.post(
           `${SetAvatarRoute}/${verify_token.data.username}`,
           {
             image: avatars[selectedAvatar],
           }
         );
 
-        if (data.data.isset) {
-          const user = {
-            username: verify_token.data.username,
-            isAvatarImageSet: data.data.isset,
-            avatarImage: data.data.image,
-            _id: data.data._id,
-          };
-          localStorage.setItem("chat-app-user", JSON.stringify(user));
-          navigate("/");
-        } else {
-          toast.error("error in set avatar try again", toast_options);
+        if (!SetAavatarInfo.data.isset) {
+          toast.error("error in set avatar try again", toast_options); 
+          return
         }
+        
+        const user = {
+            username: verify_token.data.username,
+            isAvatarImageSet: SetAavatarInfo.data.isset,
+            avatarImage: SetAavatarInfo.data.image,
+            _id: SetAavatarInfo.data._id,
+          };
+        localStorage.setItem("chat-app-user", JSON.stringify(user));
+        navigate("/");
       }
+    return 
     } catch (ex) {
       if (ex.status === 0) {
         navigate("/server-down");
         return;
       }
       toast.error(ex.message, toast_options);
-      console.log("error in chat ", ex);
+      
     }
   };
 
@@ -109,7 +110,6 @@ export default function SetAvatar() {
                   key={index}
                   onClick={() => {
                     setSelectedAvatar(index);
-                    console.log(`Image is clicked ${selectedAvatar}`);
                   }}
                   className={`avatar cursor-pointer transition-all duration-300 rounded-[5rem] p-2 ${
                     selectedAvatar === index

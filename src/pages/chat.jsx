@@ -31,7 +31,6 @@ function chat() {
       try {
         const token = localStorage.getItem("Token");
         if (!token) navigate("/login");
-        console.log("entered to chat")
         const verify = await api.post(tokenCheckRoute)
 
 
@@ -47,7 +46,6 @@ function chat() {
           return
         }
         toast.error(ex.message,toast_options)
-        console.log("error in chat ",ex)
       }
     })();
   }, []);
@@ -94,22 +92,17 @@ function chat() {
           return
         }
         toast.error(ex.message)
-        console.log("error in chat ",ex)
       }
     })();
   }, [curruser]);
 
   const handleChatchange = (chat) => {
-    if (contact) {
-      console.log(`contacts = ${{ ...contact }}`);
-    }
-    // console.log(onlineUser)
     setcurrChat(chat);
   };
 
   return (
     // <div className="Cointainer h-[100vh] w-[100vw] flex flex-col justify-center items-center gap-[1rem] bg-[#131324] ">
-    <div className="inside_coin h-[100vh] w-[100vw] bg-[#131324] grid grid-cols-[30%_70%]   overflow-hidden ">
+    <div className="inside_coin h-[100vh] w-[100vw] bg-[#131324] grid grid-cols-[30%_70%]  gap-[0.1rem] overflow-hidden  ">
       <Contacts
         contacts={contact}
         curruser={curruser}

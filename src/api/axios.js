@@ -19,13 +19,13 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   // response successfull
   (response) => {
-    console.log("response recived");
+    // console.log("response recived");
     return response;
   },
 
   // response error
   async (error) => {
-    console.log("response recived", error.response?.status);
+    // console.log("response recived", error.response?.status);
 
     const originalRequest = error.config;
     let status_code = error.response?.status;
@@ -49,10 +49,10 @@ api.interceptors.response.use(
           // retry original request
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
-          console.log(originalRequest);
+          // console.log(originalRequest);
           return api(originalRequest);
         } catch (err) {
-          console.log("eroor in axios", err);
+          // console.log("eroor in axios", err);
           localStorage.clear();
           window.location.href = "/login";
           return Promise.reject(err);

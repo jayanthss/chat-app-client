@@ -47,7 +47,6 @@ function Contacts({ contacts, curruser, currchat, onlineUser, setcontact }) {
       setNoFriends(false);
 
       const data = await api.get(`${allUsers}/${curruser._id}`);
-      console.log(data.data);
       setcontact(data.data);
     } else {
       setNoFriends(true);
@@ -57,15 +56,15 @@ function Contacts({ contacts, curruser, currchat, onlineUser, setcontact }) {
   return (
     <>
       {currUserImage && currUsername && (
-        <div className="cointainer grid grid-rows-[10%_8%_82%] overflow-hidden bg-[#121217]">
-          <div className="Brand flex items-center ml-9 gap-[1rem]  border-solid border-[#1E293B] border-r-[1px]">
+        <div className="cointainer grid grid-rows-[10%_8%_72%_10%] overflow-hidden bg-[#121217]">
+          <div className="Brand flex items-center ml-9 gap-[1rem]">
             <img className="h-[2.1rem]" src={Logo} alt="logo" />
             <h3 className="text-[white] uppercase font-extrabold text-[20px] ">
               SuperChat
             </h3>
           </div>
 
-          <div className="search flex justify-center items-center  border-t-[1px] border-solid border-[#1E293B] border-r-[1px]">
+          <div className="search flex justify-center items-center  border-t-[1px] border-solid border-[#1E293B] relative">
 
             <div className="serachbar flex items-center justify-center gap-4  bg-[hsl(221.25deg,15.69%,20%)] rounded-lg p-2 w-[80%] h-[80%]">
 
@@ -76,13 +75,13 @@ function Contacts({ contacts, curruser, currchat, onlineUser, setcontact }) {
               type="text"
               value={searchuser}
               onChange={searchFriends}
-              placeholder="Search friend"
+              placeholder="Search Conversations.."
               
             />
             </div>
           </div>
 
-          <div className="contacts flex flex-col items-center overflow-auto gap-[0.8rem] custom-scrollbar pt-4 border-solid border-[#1E293B] border-r-[1px] relative">
+          <div className="contacts flex flex-col items-center overflow-auto gap-[0.8rem] custom-scrollbar pt-4 border-solid ">
             {contacts.map((contact, index) => {
               const onlineusers = new Set(onlineUser);
               let isOnline = onlineusers.has(contact._id);
@@ -125,21 +124,22 @@ function Contacts({ contacts, curruser, currchat, onlineUser, setcontact }) {
           </div>
 
           {nofriends ? (
-            <div className="absolute top-[7.7rem] w-[29%] h-[80%] bg-[#121217] text-[#687893] flex justify-center pt-7">
-              --- No Friends ---
+            <div className="absolute top-[8.5rem] w-[29%] h-[51%] bg-[#121217] text-[#687893] flex justify-center pt-7">
+              --- No Conversation ---
             </div>
           ) : (
             ""
           )}
 
-          {/* <div className="current-user bg-[#0d0d30] flex justify-center items-center gap-[2rem]">
+          <div className="current-user bg-[#0d0d30] w-[98%] flex justify-start p-9 items-center gap-[1rem]">
             <div className="avatar">
-              <img className="h-[4rem] max-w-full" src={currUserImage} alt="avatar" />
+              <img className="h-[3.5rem]" src={currUserImage} alt="avatar" />
             </div>
             <div className="username">
-              <h2 className="text-[white]">{currUsername}</h2>
+              <h2 className="text-[white] text-[1.1rem]">{currUsername}</h2>
+              <h2 className="text-[#56fe02] text-[0.7rem]">🟢Online</h2>
             </div>
-          </div> */}
+          </div>
         </div>
       )}
     </>

@@ -42,7 +42,7 @@ function ChatCointainer({ currchat, curruser, socket }) {
   };
 
   const handle_camera_mic_permission = (msg) => {
-    console.log("entered to camera_mic() ", msg);
+    // console.log("entered to camera_mic() ", msg);
     toast.error(msg, toast_options);
   };
 
@@ -85,7 +85,7 @@ function ChatCointainer({ currchat, curruser, socket }) {
 
       socket.current.on("video-call-by-someone", async (from) => {
         VideoCaller.current = from;
-        console.log("i'm in video-call-by -someone", from);
+        // console.log("i'm in video-call-by -someone", from);
 
         if (from) {
           const getUser = await api.post(getUserRoute, {
@@ -100,12 +100,12 @@ function ChatCointainer({ currchat, curruser, socket }) {
             setincomingVideoCall(true);
           }
         } else {
-          console.log("from is not defined");
+          // console.log("from is not defined");
         }
       });
 
       socket.current.on("call-reject-msg", (msg) => {
-        console.log("entered to call-reject");
+        // console.log("entered to call-reject");
         toast.error(`User Is Busy Try again later`, toast_options);
       });
     }
@@ -136,7 +136,7 @@ function ChatCointainer({ currchat, curruser, socket }) {
   return (
     <>
       {currchat && (
-        <div className="relative cointainer grid grid-rows-[10%_78%] gap-[0.1rem] overflow-hidden bg-[#121212] z-0 ">
+        <div className="relative cointainer grid grid-rows-[10%_75%] gap-[0.1rem] overflow-hidden bg-[#121212] z-0 border-l-[1px] border-solid border-[#1E293B] ">
           <div
             className="
  chat-header flex justify-between items-center px-[2.2rem] h-18 border-b border-[#1E293B]
@@ -229,12 +229,14 @@ function ChatCointainer({ currchat, curruser, socket }) {
                 </div>
               );
             })}
+          
           </div>
-
           <Chat_Input
             handleSendMessage={handleSendMessage}
             currchat={currchat}
           />
+
+          
           <ToastContainer className="absolute bottom-0" />
         </div>
       )}

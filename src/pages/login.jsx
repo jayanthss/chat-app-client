@@ -67,7 +67,6 @@ function login() {
           return;
         }
         toast.error(ex.message);
-        console.log("error in chat ", ex);
       }
     })();
   }, []);
@@ -82,7 +81,6 @@ function login() {
           username,
           password,
         });
-        console.log(data, "in handle submit");
 
         if (data.status === false) {
           toast.error(data.msg, toast_options);
@@ -106,7 +104,6 @@ function login() {
         }
       }else{
         setError(loginErrors)
-        console.log(loginErrors)
       }
       
     } catch (ex) {
@@ -115,7 +112,6 @@ function login() {
         return;
       }
       toast.error(ex.message,toast_options);
-      console.log("error in chat ", ex);
     }
   };
 

@@ -67,9 +67,7 @@ export default function Chat_Input({ handleSendMessage, currchat }) {
         sethideSend(false);
         if (response.data.status) {
           setuserInput(response.data.aiRewriteMsg);
-        } else {
-          console.log(`error in ${response.data.error}`);
-        }
+        } 
       }
     } catch (ex) {
       console.log(`Error in handle rewrite ${ex}}`);
@@ -93,8 +91,8 @@ export default function Chat_Input({ handleSendMessage, currchat }) {
 
   return (
     <>
-      <div className="container  flex justify-center items-center px-8  absolute bottom-5 overflow-visible w-[70vw] resize-y">
-        <div className="Input_field flex items-center justify-center w-[60vw] p-2 rounded-[2rem] gap-[0.5rem] bg-[#21212a]  resize-y">
+      <div className="container  flex justify-center items-center px-8  overflow-visible w-[70vw] resize-y border-[#1E293B] border-t">
+        <div className="Input_field flex items-center justify-center w-[60vw] p-2 rounded-[2rem] gap-[0.5rem] bg-[#21212a]  resize-y absolute bottom-10">
           <div className="button_container flex items-center justify-center text-white">
             <div className="emoji relative">
               <BsEmojiSmileFill
@@ -172,6 +170,8 @@ export default function Chat_Input({ handleSendMessage, currchat }) {
             </>
           )}
         </div>
+
+        <div className="text-gray-500 text-[0.8rem] absolute bottom-3">Disclaimer : Ai Makes Mistake Review Carefully</div>
       </div>
     </>
   );
